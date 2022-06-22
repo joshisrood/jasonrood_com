@@ -7,11 +7,11 @@ import { GalleryItem } from 'src/types/gallery-item.type';
 @Component({
   selector: 'app-gallery-view',
   template: `
-    <div class="lg:px-0 px-8 mb-20 mx-auto" *ngIf="imgUrl$ | async as imgUrl">
+    <div class="lg:px-0 p-4 mb-20 mx-auto" *ngIf="imgUrl$ | async as imgUrl">
       <img [src]="imgUrl" 
-        class="w-full aspect-auto border-stone-400 border" />
+        class="block w-full aspect-auto border-stone-400 border" />
       <div class="flex justify-end">
-        <div class="w-1/2 pr-1 text-right font-semibold text-gray-700"> 
+        <div class="w-1/2 pr-1 text-right font-semibold text-black"> 
           <span>{{galleryItem.title}}</span>
         </div>
       </div>

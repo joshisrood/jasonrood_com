@@ -13,7 +13,7 @@ import { GalleryItem } from 'src/types/gallery-item.type';
         class="w-full aspect-auto border-stone-400 border break-after-avoid cursor-pointer" 
         [routerLink]="[galleryItem.id]"/>
       <div class="flex justify-end">
-        <div class="w-1/2 pr-1 text-right font-semibold text-gray-700"> 
+        <div class="w-1/2 pr-1 text-right text-sm font-semibold text-black"> 
           <a [routerLink]="[galleryItem.id]" class="cursor-pointer">{{galleryItem.title}}</a>
         </div>
       </div>
