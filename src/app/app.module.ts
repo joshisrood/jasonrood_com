@@ -5,12 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { GalleryItemPreviewComponent } from './components/gallery-item-preview/gallery-item-preview.component';
+import { GalleryViewComponent } from './gallery-view/gallery-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GalleryComponent,
-    GalleryItemPreviewComponent
+    GalleryItemPreviewComponent,
+    GalleryViewComponent
   ],
   imports: [
     BrowserModule,

@@ -5,8 +5,8 @@ import { Component } from '@angular/core';
   template: `
     <div class="flex flex-wrap max-w-screen-xl mx-auto mt-4 px-1">
       <div class="lg:w-1/6 w-full my-4">
-        <div class="w-32 mx-auto">
-          <img class="aspect-square w-full" src="assets/Logo.png" />
+        <div class="w-32 mx-auto cursor-pointer">
+          <img [routerLink]="['']" class="aspect-square w-full" src="assets/Logo.png" />
         </div>
         <div class="text-center">
           Jason Rood

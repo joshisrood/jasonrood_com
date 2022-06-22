@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Router } from '@angular/router';
+import { Observable, EMPTY } from 'rxjs';
 import { GalleryItem } from 'src/types/gallery-item.type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GalleryItemsService {
+export class GalleryItemsService implements Resolve<GalleryItem | undefined> {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   public getList() : GalleryItem[] {
     return this.GALLERY_LIST;
@@ -14,6 +16,16 @@ export class GalleryItemsService {
 
   public getByID(id: string): GalleryItem | undefined {
     return this.GALLERY_LIST.find(galleryItem => galleryItem.id === id);
+  }
+
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): GalleryItem | Observable<GalleryItem> | Promise<GalleryItem> {
+    const path = route.paramMap.get('path')!;
+    const foundItem = this.getByID(path)
+    if(typeof foundItem === 'undefined') {
+      this.router.navigate(['']);
+      return EMPTY;
+    }
+    return foundItem;
   }
 
   private GALLERY_LIST: GalleryItem[] = [
