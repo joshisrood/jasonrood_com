@@ -8,8 +8,9 @@ import { GalleryItem } from 'src/types/gallery-item.type';
 @Component({
   selector: 'app-gallery-item-preview',
   template: `
-    <div class="lg:w-80 lg:px-0 px-8 mb-20 mx-auto">
+    <div class="lg:w-80 lg:px-0 px-8 mb-20 mx-auto" [hidden]="!show">
       <img [src]="imgUrl$ | async" 
+        (load)="imgLoad($event)"
         class="w-full aspect-auto border-stone-400 border break-after-avoid cursor-pointer" 
         [routerLink]="[galleryItem.id]"/>
       <div class="flex justify-end">
@@ -28,6 +29,7 @@ export class GalleryItemPreviewComponent implements OnInit, OnDestroy {
   resizeObservable$: Observable<Event>;
   resizeSubscription$: Subscription;
   imgUrl$: BehaviorSubject<SafeResourceUrl>;
+  show: boolean = false;
 
   @Input() galleryItem: GalleryItem;
 
@@ -49,6 +51,10 @@ export class GalleryItemPreviewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.resizeSubscription$.unsubscribe();
     this.imgUrl$.complete();
+  }
+
+  imgLoad(event: Event): void{
+    this.show = true;
   }
   
   googlePhotoImagePreview(): SafeResourceUrl {

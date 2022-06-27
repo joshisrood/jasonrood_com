@@ -5,7 +5,7 @@ import { GalleryItemsService } from '../services/gallery-items.service';
 @Component({
   selector: 'app-gallery',
   template: `
-    <div class="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
+    <div class="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 w-full">
       <app-gallery-item-preview *ngFor="let item of galleryItems" [galleryItem]="item"></app-gallery-item-preview>
     </div>
   `,

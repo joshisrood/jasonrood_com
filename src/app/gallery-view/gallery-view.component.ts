@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { GalleryItem } from 'src/types/gallery-item.type';
@@ -7,11 +7,15 @@ import { GalleryItem } from 'src/types/gallery-item.type';
 @Component({
   selector: 'app-gallery-view',
   template: `
-    <div class="lg:px-0 p-4 mb-20 mx-auto" *ngIf="imgUrl$ | async as imgUrl">
+    <div class="lg:px-0 p-4 mx-auto max-w-full" *ngIf="imgUrl$ | async as imgUrl" [hidden]="!show">
       <img [src]="imgUrl" 
-        class="block w-full aspect-auto border-stone-400 border" />
-      <div class="flex justify-end">
-        <div class="w-1/2 pr-1 text-right font-semibold text-black"> 
+        (load)="imgLoad($event)"
+        class="block mx-auto aspect-auto border-stone-400 border" />
+      <div class="flex justify-end mx-auto title-holder">
+        <div class="w-1/2 pr-1 text-left "> 
+          <a target="_blank" class="text-xs hover:underline text-black cursor-pointer" [href]="googlePhotoFullRezImage()">full resolution image &#x21AC;</a>
+        </div>
+        <div class="w-1/2 pr-1 text-right text-sm font-semibold text-black"> 
           <span>{{galleryItem.title}}</span>
         </div>
       </div>
@@ -24,19 +28,27 @@ export class GalleryViewComponent implements OnInit, OnDestroy {
 
   galleryItem: GalleryItem;
   imgUrl$: BehaviorSubject<SafeResourceUrl>;
+  show: boolean = false;
 
-  constructor(private domSanitizer: DomSanitizer, private route: ActivatedRoute) { }
+  private Y_PX_GUTTER: number = 90;
+  private X_PX_GUTTER: number = 48;
+
+  constructor(private domSanitizer: DomSanitizer, private route: ActivatedRoute,
+     private renderer: Renderer2, private el: ElementRef, private title: Title) { }
 
   ngOnInit() {
     this.route.data
       .subscribe(data => {
         this.galleryItem = data['galleryItem'];
+        this.title.setTitle("Jason Rood Illustration - " + this.galleryItem.title);
+        const imgWidth = this.calculateWidth();
+
         if(typeof this.imgUrl$ === 'undefined') {
-          this.imgUrl$ = new BehaviorSubject<SafeResourceUrl>(this.googlePhotoImagePreview());
+          this.imgUrl$ = new BehaviorSubject<SafeResourceUrl>(this.googlePhotoImagePreview(imgWidth));
         }
         else {
-          this.imgUrl$.next(this.googlePhotoImagePreview());
-        }
+          this.imgUrl$.next(this.googlePhotoImagePreview(imgWidth));
+        }        
       });
   }
 
@@ -44,9 +56,51 @@ export class GalleryViewComponent implements OnInit, OnDestroy {
     this.imgUrl$.complete();
   }
 
-  googlePhotoImagePreview(): SafeResourceUrl {
-    const w_string = "=w" + this.galleryItem.originalWidth;
-    return this.domSanitizer.bypassSecurityTrustResourceUrl(this.galleryItem.url + w_string);
+  imgLoad(event: Event): void{
+    const imgWidth = this.calculateWidth();
+    const screenH = this.getScreenHeight();
+    const screenW = this.getContrainstWidth();
+
+    if(screenW > 1024 && (this.galleryItem.originalWidth > screenW - this.X_PX_GUTTER 
+        || this.galleryItem.originalHeight > screenH - this.Y_PX_GUTTER)) {
+      const titleElement = this.el.nativeElement.querySelector(".title-holder");
+      this.renderer.setStyle(titleElement,"width", imgWidth.toString() + "px");
+    }
+    this.show = true;
+  }
+
+  googlePhotoImagePreview(width: number): SafeResourceUrl {
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(this.galleryItem.url + "=w" + width.toString());
+  }
+
+  googlePhotoFullRezImage(): SafeResourceUrl {
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(this.galleryItem.url + "=w" + this.galleryItem.originalWidth.toString());
+  }
+
+  calculateWidth(): number {
+    const screenH = this.getScreenHeight();
+    const screenW = this.getContrainstWidth();
+
+    if(screenW > 1024 && this.galleryItem.originalWidth > screenW - this.X_PX_GUTTER) {
+      return Math.round(screenW > 1024 ? screenW * 5/6 : screenW) - this.X_PX_GUTTER;
+    }
+
+    if(screenW > 1024 && this.galleryItem.originalHeight > screenH - this.Y_PX_GUTTER) {
+      const ratio = (screenH - this.Y_PX_GUTTER)/this.galleryItem.originalHeight;
+      const computedW = Math.round(this.galleryItem.originalWidth*ratio);
+
+      return computedW;
+    }
+
+    return this.galleryItem.originalWidth;
+  }
+
+  getScreenHeight(): number {
+    return window.innerHeight;
+  }
+
+  getContrainstWidth(): number {
+    return Math.min(window.innerWidth, this.renderer.parentNode(this.el.nativeElement).offsetWidth);
   }
 
 }

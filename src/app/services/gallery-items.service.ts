@@ -73,7 +73,7 @@ export class GalleryItemsService implements Resolve<GalleryItem | undefined> {
     },
     { 
       title: "Lights on the Water 1",
-      id: "LightsOntheWater1",
+      id: "LightsOnTheWater1",
       url: "https://lh3.googleusercontent.com/pw/AM-JKLWZy2vSiJ5NuXvgCSWVh7hDoJUOezTgZQKE7zypnF-JE5_3pQgqL9LbjSoFjW01HSblYAeptAwUW4Iw_UedIPTsyYMxFsqscLm7LSrWbFmb6g2hNkFmt7C-1_aeRLV09zVJ74E67SCUMGPrBrJ3yo_k",
       originalWidth: 1100,
       originalHeight: 1500
@@ -87,7 +87,7 @@ export class GalleryItemsService implements Resolve<GalleryItem | undefined> {
     },
     { 
       title: "Lights on the Water 3",
-      id: "LightsOntheWater3",
+      id: "LightsOnTheWater3",
       url: "https://lh3.googleusercontent.com/pw/AM-JKLWx6oijmgQr6HIQHKGJ-bBZZU2XYty18GAXLl3DkXXPvx0kqOilSjwRbDY8X9mK7MFeXE1nEO79XUbIywU7NsK8S_M1xVxjXJNfHmt-nxq_BHhZ1GC-49tnUGmxxV9GX-Yxo5aiaq_SYfaSDFNuODyJ",
       originalWidth: 1084,
       originalHeight: 1488
