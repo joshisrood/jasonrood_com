@@ -3,6 +3,7 @@ import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { GalleryItem } from 'src/types/gallery-item.type';
+import { GalleryItemsService } from '../services/gallery-items.service';
 
 @Component({
   selector: 'app-gallery-view',
@@ -20,6 +21,16 @@ import { GalleryItem } from 'src/types/gallery-item.type';
         </div>
       </div>
     </div>
+    <div class="mx-auto max-w-full lg:hidden mt-16 text-center">
+      <h3 class="border-b border-stone-400 text-sm mx-8">
+        <a [routerLink]="['/']" class="cursor-pointer">Illustrations</a>
+      </h3>
+      <ol class="leading-none mb-8">
+        <li *ngFor="let item of galleryItems" class="mb-1.5">
+          <a [routerLink]="['/'+item.id]" class="text-xs">{{item.title}}</a>
+        </li>
+      </ol>
+    </div>
   `,
   styles: [
   ]
@@ -27,16 +38,19 @@ import { GalleryItem } from 'src/types/gallery-item.type';
 export class GalleryViewComponent implements OnInit, OnDestroy {
 
   galleryItem: GalleryItem;
-  imgUrl$: BehaviorSubject<SafeResourceUrl>;
+  galleryItems: GalleryItem[];
+  imgUrl$: BehaviorSubject<SafeResourceUrl | null>;
   show: boolean = false;
 
   private Y_PX_GUTTER: number = 90;
   private X_PX_GUTTER: number = 48;
 
   constructor(private domSanitizer: DomSanitizer, private route: ActivatedRoute,
-     private renderer: Renderer2, private el: ElementRef, private title: Title) { }
+     private renderer: Renderer2, private el: ElementRef, private title: Title
+     ,private galleryItemsService: GalleryItemsService) { }
 
   ngOnInit() {
+    this.galleryItems = this.galleryItemsService.getList();
     this.route.data
       .subscribe(data => {
         this.galleryItem = data['galleryItem'];
@@ -44,7 +58,7 @@ export class GalleryViewComponent implements OnInit, OnDestroy {
         const imgWidth = this.calculateWidth();
 
         if(typeof this.imgUrl$ === 'undefined') {
-          this.imgUrl$ = new BehaviorSubject<SafeResourceUrl>(this.googlePhotoImagePreview(imgWidth));
+          this.imgUrl$ = new BehaviorSubject<SafeResourceUrl | null>(this.googlePhotoImagePreview(imgWidth));
         }
         else {
           this.imgUrl$.next(this.googlePhotoImagePreview(imgWidth));

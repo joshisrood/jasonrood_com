@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { GalleryItemPreviewComponent } from './components/gallery-item-preview/gallery-item-preview.component';
 import { GalleryViewComponent } from './gallery-view/gallery-view.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GalleryComponent,
     GalleryItemPreviewComponent,
-    GalleryViewComponent
+    GalleryViewComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
